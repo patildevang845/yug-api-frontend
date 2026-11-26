@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Automations · YUG-API</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+.rl{--bg:#07070d;--bg2:#0c0b16;--surface:rgba(255,255,255,.035);--surface2:rgba(255,255,255,.065);--border:rgba(255,255,255,.09);--text:#eeedf7;--muted:#a6a4bb;--dim:#8d8ba3;--accent:#b5a8ff;--accent2:#ffa45c;--btn:#eeedf7;--btnText:#0a0914;--glow:rgba(181,168,255,.55);--ring:rgba(181,168,255,.16);--ok:#6ee7a8;--warn:#ffcf70;--bad:#ff9b8a;--chip:rgba(181,168,255,.12);--star:1;--shadow:0 30px 60px -40px rgba(0,0,0,.9);
+ font-family:'Inter',system-ui,sans-serif;color:var(--text);background:var(--bg);transition:background .6s ease,color .6s ease;-webkit-font-smoothing:antialiased}
+.rl.day{--bg:#f6f6fa;--bg2:#ffffff;--surface:#ffffff;--surface2:#f0eff7;--border:#e2e0ee;--text:#15141d;--muted:#575569;--dim:#636178;--accent:#5944dc;--accent2:#b8510a;--btn:#15141d;--btnText:#ffffff;--glow:rgba(89,68,220,.35);--ring:rgba(89,68,220,.13);--ok:#157a3d;--warn:#a34f06;--bad:#b93d0c;--chip:rgba(89,68,220,.08);--star:0;--shadow:0 30px 60px -40px rgba(40,30,90,.35)}
+.rl *{box-sizing:border-box}
+:where(.rl a){color:var(--accent2)}
+:where(.rl a:hover){color:var(--text)}
+.rl h1,.rl h2,.rl h3,.rl h4,.hf{font-family:'Space Grotesk','Inter',sans-serif;letter-spacing:-.02em;margin:0}
+.rl p{margin:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:18px;transition:border-color .35s,transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,background .6s}
+.lift:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--accent) 45%,var(--border));box-shadow:0 22px 44px -28px var(--glow)}
+.chip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font-size:12px;background:var(--chip);color:var(--accent);font-weight:500;white-space:nowrap;text-decoration:none}
+.muted{color:var(--muted)}
+.btn{position:relative;overflow:hidden;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;font:600 14px 'Inter',sans-serif;border:1px solid transparent;cursor:pointer;text-decoration:none;white-space:nowrap;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .35s,background .35s,color .35s,border-color .35s,opacity .3s}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.96);transition-duration:.08s}
+.btn:focus-visible,.tgl:focus-visible,.nav:focus-visible,.tab:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.btn-sm{height:36px;padding:0 14px;font-size:13px}
+.btn-lg{height:52px;padding:0 26px;font-size:15px}
+.btn-primary{background:var(--btn);color:var(--btnText)}
+.btn-primary:hover{box-shadow:0 10px 32px -8px var(--glow),0 0 0 5px var(--ring)}
+.btn-primary::after,.btn-orbit::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(110deg,transparent 30%,color-mix(in srgb,var(--accent) 45%,transparent) 50%,transparent 70%);transform:translateX(-130%);transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.btn-primary:hover::after,.btn-orbit:hover::after{transform:translateX(130%)}
+.btn .arr{transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.btn:hover .arr{transform:translateX(4px)}
+.btn-orbit{color:var(--btnText);border:1.5px solid transparent;background:linear-gradient(var(--btn),var(--btn)) padding-box,conic-gradient(from var(--ang),transparent 0 62%,var(--accent2) 78%,var(--accent) 90%,transparent) border-box;animation:spin 3.6s linear infinite}
+.btn-orbit:hover{box-shadow:0 12px 36px -8px var(--glow),0 0 0 6px var(--ring);animation-duration:1.4s}
+.btn-ghost{background:transparent;color:var(--text);border-color:var(--border)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);background:var(--chip)}
+.btn-soft{background:var(--surface2);color:var(--text);border-color:var(--border)}
+.btn-soft:hover{background:var(--chip);color:var(--accent)}
+.btn:disabled,.btn.off{opacity:.38;pointer-events:none;transform:none;box-shadow:none}
+.btn-connect.loading{pointer-events:none;background:var(--chip);color:var(--accent);border-color:transparent}
+.btn-connect.done{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,transparent);animation:pop .55s cubic-bezier(.2,.8,.2,1)}
+.btn-connect.done::after{display:none}
+.spinner{width:14px;height:14px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:rot .7s linear infinite}
+.check path{stroke-dasharray:24;stroke-dashoffset:24;animation:draw .45s .1s cubic-bezier(.2,.8,.2,1) forwards}
+.tgl{position:relative;flex:none;width:64px;height:34px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;padding:0;overflow:hidden;transition:background .6s,border-color .6s}
+.tgl .knob{position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:var(--btn);color:var(--btnText);display:grid;place-items:center;transition:transform .6s cubic-bezier(.6,-.35,.3,1.4),background .6s}
+.day .tgl .knob{transform:translateX(30px)}
+.tgl svg{position:absolute;transition:opacity .4s,transform .6s cubic-bezier(.2,.8,.2,1)}
+.night .k-sun,.rl:not(.day) .k-sun{opacity:0;transform:rotate(-120deg) scale(.4)}
+.day .k-moon{opacity:0;transform:rotate(120deg) scale(.4)}
+.tgl .tstar{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--text);opacity:calc(var(--star)*.7);transition:opacity .5s}
+.iconbtn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;position:relative;transition:border-color .3s,color .3s,transform .3s}
+.iconbtn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.nav{display:flex;align-items:center;gap:12px;height:40px;padding:0 12px;border-radius:12px;color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;transition:background .25s,color .25s}
+.nav:hover{background:var(--surface2);color:var(--text)}
+.nav.on{background:var(--surface2);color:var(--text)}
+.nav .pip{margin-left:auto;width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);opacity:0}
+.nav.on .pip{opacity:1}
+.grp{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);padding:18px 12px 6px;font-weight:600}
+.field{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500}
+.inp{height:44px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);padding:0 14px;font:400 14px 'Inter',sans-serif;outline:none;transition:border-color .25s,box-shadow .25s;width:100%}
+.inp::placeholder{color:var(--dim)}
+.inp:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--ring)}
+.tab{height:34px;padding:0 14px;border-radius:999px;border:none;background:transparent;color:var(--muted);font:500 13px 'Inter',sans-serif;cursor:pointer;transition:background .3s,color .3s}
+.tab:hover{color:var(--text)}
+.tab.on{background:var(--btn);color:var(--btnText)}
+.tabs{display:inline-flex;gap:4px;padding:4px;border-radius:999px;border:1px solid var(--border);background:var(--surface)}
+.sw{position:relative;width:40px;height:24px;border-radius:999px;border:none;background:var(--surface2);box-shadow:inset 0 0 0 1px var(--border);cursor:pointer;padding:0;transition:background .35s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--muted);transition:transform .45s cubic-bezier(.6,-.35,.3,1.4),background .35s}
+.sw.on{background:var(--accent)}
+.sw.on::after{transform:translateX(16px);background:var(--btnText)}
+.agree{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--muted);cursor:pointer;background:none;border:none;padding:0;text-align:left;font-family:inherit}
+.box{flex:none;width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);display:grid;place-items:center;transition:background .3s,border-color .3s,transform .3s;color:var(--btnText)}
+.agree:hover .box{border-color:var(--accent)}
+.agree.on .box{background:var(--accent);border-color:var(--accent);transform:scale(1.08)}
+.star{position:absolute;border-radius:50%;background:#fff;opacity:calc(var(--star)*.85);animation:twinkle 5s ease-in-out infinite;transition:opacity .8s}
+.layer{position:absolute;inset:0;pointer-events:none;transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+.ringsvg{stroke:var(--border);fill:none}
+.spinslow{animation:rot 90s linear infinite;transform-origin:50% 50%}
+.rise{animation:rise .9s cubic-bezier(.2,.8,.2,1) both}
+.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}.d4{animation-delay:.32s}.d5{animation-delay:.4s}.d6{animation-delay:.48s}
+.fade{animation:fade .5s cubic-bezier(.2,.8,.2,1) both}
+.float{animation:float 7s ease-in-out infinite}
+.pulse{animation:pulse 2.4s ease-out infinite}
+.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font:600 13px 'Inter',sans-serif;background:var(--surface2);border:1px solid var(--border);color:var(--text)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;font-weight:500;color:var(--dim);padding:12px 16px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl td{padding:14px 16px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl tr{transition:background .2s}
+.tbl tbody tr:hover{background:var(--surface2)}
+.bar{height:6px;border-radius:6px;background:var(--surface2);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:6px;background:var(--accent);animation:grow 1.2s cubic-bezier(.2,.8,.2,1) both;transform-origin:left}
+.draw{stroke-dasharray:1400;stroke-dashoffset:1400;animation:dash 2.2s .2s cubic-bezier(.4,0,.2,1) forwards}
+.dashflow{stroke-dasharray:4 6;animation:flow 1.2s linear infinite}
+@keyframes spin{to{--ang:360deg}}
+@keyframes rot{to{transform:rotate(360deg)}}
+@keyframes pop{0%{transform:scale(.92)}55%{transform:scale(1.06)}100%{transform:scale(1)}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes dash{to{stroke-dashoffset:0}}
+@keyframes flow{to{stroke-dashoffset:-20}}
+@keyframes twinkle{0%,100%{opacity:calc(var(--star)*.85)}50%{opacity:calc(var(--star)*.2)}}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 var(--glow)}100%{box-shadow:0 0 0 12px transparent}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.opt{cursor:pointer;text-align:left;font-family:inherit;color:var(--text);background:var(--surface)}
+.opt.on{border-color:var(--accent);box-shadow:0 0 0 4px var(--ring);background:var(--chip)}
+.opt .tick{opacity:0;transform:scale(.4);transition:opacity .3s,transform .45s cubic-bezier(.6,-.35,.3,1.4)}
+.opt.on .tick{opacity:1;transform:none}
+.pill{height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text);font:500 13px 'Inter',sans-serif;cursor:pointer;transition:all .3s}
+.pill:hover{border-color:var(--accent)}
+.pill.on{background:var(--btn);color:var(--btnText);border-color:var(--btn)}
+.bub{max-width:70%;padding:11px 14px;font-size:14px;line-height:1.5;animation:fade .4s cubic-bezier(.2,.8,.2,1) both}
+.bub.in{align-self:flex-start;border-radius:16px 16px 16px 4px;background:var(--surface2)}
+.bub.out{align-self:flex-end;border-radius:16px 16px 4px 16px;background:var(--btn);color:var(--btnText)}
+.row{display:flex;gap:12px;align-items:center;padding:12px;border-radius:14px;cursor:pointer;border:1px solid transparent;background:transparent;width:100%;text-align:left;font-family:inherit;color:var(--text);transition:background .25s,border-color .25s}
+.row:hover{background:var(--surface2)}
+.row.on{background:var(--surface2);border-color:var(--border)}
+.legend{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text);font:500 12px 'Inter',sans-serif;cursor:pointer;transition:opacity .3s}
+.legend.off{opacity:.4}
+@media (prefers-reduced-motion:reduce){.rl *{animation:none!important;transition:none!important}}
+
+@property --n{syntax:'<integer>';inherits:true;initial-value:0}
+.loop{animation-duration:9s;animation-iteration-count:infinite;animation-timing-function:cubic-bezier(.2,.8,.2,1);animation-fill-mode:both;animation-delay:0s}
+@keyframes kt{0%,10%{opacity:0}12%,19%{opacity:1}21%,48%{opacity:0}50%,57%{opacity:1}59%,100%{opacity:0}}.k-t{animation-name:kt}
+@keyframes h1{0%,4%{background:var(--surface2);color:var(--muted)}6%,30%{background:var(--btn);color:var(--btnText)}33%,100%{background:var(--surface2);color:var(--muted)}}
+@keyframes h2{0%,30%{background:var(--surface2);color:var(--muted)}33%,60%{background:var(--btn);color:var(--btnText)}63%,100%{background:var(--surface2);color:var(--muted)}}
+@keyframes h3{0%,60%{background:var(--surface2);color:var(--muted)}63%,94%{background:var(--btn);color:var(--btnText)}97%,100%{background:var(--surface2);color:var(--muted)}}
+.k-h1{animation-name:h1}.k-h2{animation-name:h2}.k-h3{animation-name:h3}
+.cnt{font-variant-numeric:tabular-nums}.cnt::after{counter-reset:n var(--n);content:counter(n)}
+@keyframes n1{0%,6%{--n:0}58%,100%{--n:4812}}@keyframes n2{0%,30%{--n:0}75%,100%{--n:3906}}@keyframes n3{0%,60%{--n:0}90%,100%{--n:611}}
+.k-n1{animation-name:n1;animation-timing-function:ease-out}.k-n2{animation-name:n2;animation-timing-function:ease-out}.k-n3{animation-name:n3;animation-timing-function:ease-out}
+@keyframes kbar{0%,6%{transform:scaleX(0)}75%,100%{transform:scaleX(.81)}}.bar i.k-bar{animation:kbar 9s cubic-bezier(.2,.8,.2,1) infinite both;transform-origin:left}
+.marquee{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.track{display:flex;gap:12px;width:max-content;animation:marq 38s linear infinite}
+.track.rev{animation-direction:reverse;animation-duration:46s}
+.marquee:hover .track{animation-play-state:paused}
+@keyframes marq{to{transform:translateX(-50%)}}
+.beam{position:relative;width:140px;height:2px;background:color-mix(in srgb,var(--accent) 30%,transparent);flex:none}
+.beam i{position:absolute;top:-3px;left:0;width:8px;height:8px;border-radius:50%;background:var(--accent2);box-shadow:0 0 12px var(--accent2);animation:travel 2.4s cubic-bezier(.5,0,.5,1) infinite}
+.beam i:nth-child(2){animation-delay:.8s;background:var(--accent);box-shadow:0 0 12px var(--accent)}.beam i:nth-child(3){animation-delay:1.6s}
+.beam.back i{animation-name:travelBack}
+@keyframes travel{0%{transform:translateX(0);opacity:0}15%,85%{opacity:1}100%{transform:translateX(132px);opacity:0}}
+@keyframes travelBack{0%{transform:translateX(132px);opacity:0}15%,85%{opacity:1}100%{transform:translateX(0);opacity:0}}
+@keyframes revealIn{from{opacity:0;transform:translateY(70px) scale(.97);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes pxA{from{transform:translateY(160px) rotate(-6deg)}to{transform:translateY(-160px) rotate(6deg)}}
+@keyframes pxB{from{transform:translateY(-90px)}to{transform:translateY(90px)}}
+@keyframes pxC{from{transform:translateY(60px)}to{transform:translateY(-60px)}}
+@keyframes heroOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-120px) scale(.94);filter:blur(6px)}}
+@supports (animation-timeline: view()){
+.reveal{animation:revealIn linear both;animation-timeline:view();animation-range:entry 0% cover 28%}
+.px1{animation:pxA linear both;animation-timeline:view();animation-range:cover}
+.px2{animation:pxB linear both;animation-timeline:view();animation-range:cover}
+.px3{animation:pxC linear both;animation-timeline:view();animation-range:cover}
+.heroOut{animation:heroOut linear both;animation-timeline:view();animation-range:exit 10% exit 90%}
+}
+@keyframes a{0%,4%{opacity:0;transform:translateY(10px) scale(.97)}8%,93%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}.k-a{animation-name:a}@keyframes b{0%,20%{opacity:0;transform:translateY(10px) scale(.97)}24%,93%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}.k-b{animation-name:b}@keyframes c{0%,22%{opacity:0;transform:translateY(10px) scale(.97)}26%,93%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}.k-c{animation-name:c}@keyframes d{0%,40%{opacity:0;transform:translateY(10px) scale(.97)}44%,93%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}.k-d{animation-name:d}@keyframes e{0%,58%{opacity:0;transform:translateY(10px) scale(.97)}62%,93%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}.k-e{animation-name:e}@keyframes res{0%,70%{opacity:0;transform:translateY(10px) scale(.97)}74%,93%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}.k-res{animation-name:res}@keyframes r1{0%,6%{opacity:0;transform:translateY(10px) scale(.97)}10%,93%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}.k-r1{animation-name:r1}@keyframes r2{0%,22%{opacity:0;transform:translateY(10px) scale(.97)}26%,93%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}.k-r2{animation-name:r2}@keyframes r3{0%,38%{opacity:0;transform:translateY(10px) scale(.97)}42%,93%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}.k-r3{animation-name:r3}@keyframes c1{0%,30%{opacity:0;transform:translateY(10px) scale(.97)}34%,93%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}.k-c1{animation-name:c1}@keyframes c2{0%,48%{opacity:0;transform:translateY(10px) scale(.97)}52%,93%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}.k-c2{animation-name:c2}@keyframes c3{0%,66%{opacity:0;transform:translateY(10px) scale(.97)}70%,93%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}.k-c3{animation-name:c3}@keyframes live{0%,80%{opacity:0;transform:translateY(10px) scale(.97)}84%,93%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}.k-live{animation-name:live}@keyframes ci0{0%,8%{opacity:1}9%,96%{opacity:0}98%,100%{opacity:1}}.k-ci0{animation-name:ci0}@keyframes cl0{0%,8%{opacity:0}9%,17%{opacity:1}18%,100%{opacity:0}}.k-cl0{animation-name:cl0}@keyframes cd0{0%,17%{opacity:0;transform:scale(.85)}19%{opacity:1;transform:scale(1.08)}21%,95%{opacity:1;transform:none}97%,100%{opacity:0}}.k-cd0{animation-name:cd0}@keyframes ci1{0%,26%{opacity:1}27%,96%{opacity:0}98%,100%{opacity:1}}.k-ci1{animation-name:ci1}@keyframes cl1{0%,26%{opacity:0}27%,35%{opacity:1}36%,100%{opacity:0}}.k-cl1{animation-name:cl1}@keyframes cd1{0%,35%{opacity:0;transform:scale(.85)}37%{opacity:1;transform:scale(1.08)}39%,95%{opacity:1;transform:none}97%,100%{opacity:0}}.k-cd1{animation-name:cd1}@keyframes ci2{0%,44%{opacity:1}45%,96%{opacity:0}98%,100%{opacity:1}}.k-ci2{animation-name:ci2}@keyframes cl2{0%,44%{opacity:0}45%,53%{opacity:1}54%,100%{opacity:0}}.k-cl2{animation-name:cl2}@keyframes cd2{0%,53%{opacity:0;transform:scale(.85)}55%{opacity:1;transform:scale(1.08)}57%,95%{opacity:1;transform:none}97%,100%{opacity:0}}.k-cd2{animation-name:cd2}@keyframes ci3{0%,62%{opacity:1}63%,96%{opacity:0}98%,100%{opacity:1}}.k-ci3{animation-name:ci3}@keyframes cl3{0%,62%{opacity:0}63%,71%{opacity:1}72%,100%{opacity:0}}.k-cl3{animation-name:cl3}@keyframes cd3{0%,71%{opacity:0;transform:scale(.85)}73%{opacity:1;transform:scale(1.08)}75%,95%{opacity:1;transform:none}97%,100%{opacity:0}}.k-cd3{animation-name:cd3}</style>
+</helmet>
+<div class="rl {{mode}}" style="min-height: 100vh; position: relative; overflow: hidden"><div aria-hidden="true" style="position: absolute; inset: 0 0 auto 0; height: 420px; pointer-events: none; overflow: hidden"><div class="layer" aria-hidden="true" style="transform: translate3d({{p1x}}px, {{p1y}}px, 0)"><sc-for list="{{stars}}" as="s" hint-placeholder-count="0"><i class="star" style="left: {{s.x}}%; top: {{s.y}}%; width: {{s.z}}px; height: {{s.z}}px; animation-delay: {{s.d}}s"></i></sc-for></div></div><div style="position: relative; display: flex; flex-wrap: wrap; min-height: 100vh"><aside style="flex: 1 1 240px; max-width: 100%; padding: 20px 14px; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 2px; position: relative; z-index: 1">
+<div style="padding: 2px 10px 16px"><a href="Main.dc.html" style="display:flex;align-items:center;text-decoration:none;color:var(--text)" aria-label="YUG-API home"><span class="hf" style="font-size:21px;font-weight:700;letter-spacing:.02em;white-space:nowrap">YUG-API</span></a></div>
+<button type="button" class="btn btn-soft btn-sm" style="justify-content: space-between; border-radius: 12px; margin-bottom: 6px"><span style="display: flex; align-items: center; gap: 8px"><span class="avatar" style="width: 22px; height: 22px; font-size: 10px; border-radius: 6px">AC</span>Acme Workspace</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform: rotate(90deg)"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+<nav aria-label="Main" style="display: flex; flex-direction: column; gap: 2px">
+<a class="nav" href="Home.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg>Home<span class="pip"></span></a>
+<div class="grp">Engage</div>
+<a class="nav" href="Inbox.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-6l-2 3h-4l-2-3H2"></path><path d="M5.5 5h13L22 12v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z"></path></svg>Team Inbox<span class="pip"></span></a>
+<a class="nav" href="Campaigns.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 15-6v14L3 13z"></path><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path></svg>Campaigns<span class="pip"></span></a>
+<a class="nav" href="Inbox.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"></path></svg>Contacts<span class="pip"></span></a>
+<div class="grp">Automate</div>
+<a class="nav on" href="Automations.dc.html" aria-current="page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="8" width="16" height="12" rx="3"></rect><path d="M12 4v4M9 13v1M15 13v1M2 14h2M20 14h2"></path></svg>AI Agents<span class="pip"></span></a>
+<a class="nav" href="Automations.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"></path></svg>Automations<span class="pip"></span></a>
+<div class="grp">Grow</div>
+<a class="nav" href="Connect.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h12l1 14H5z"></path><path d="M9 7a3 3 0 0 1 6 0"></path></svg>Commerce<span class="pip"></span></a>
+<a class="nav" href="Campaigns.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1"></circle></svg>Ads<span class="pip"></span></a>
+<div class="grp">Insights</div>
+<a class="nav" href="Analytics.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"></path><path d="m7 15 4-4 3 3 5-6"></path></svg>Analytics<span class="pip"></span></a>
+<div class="grp">Build</div>
+<a class="nav" href="Connect.dc.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2v6M15 2v6M6 8h12v4a6 6 0 0 1-12 0zM12 18v4"></path></svg>Channels<span class="pip"></span></a>
+</nav><div style="flex: 1; min-height: 24px"></div>
+<div class="card" style="padding: 16px; border-radius: 16px; display: flex; flex-direction: column; gap: 10px"><div style="display: flex; justify-content: space-between; font-size: 13px"><span style="font-weight: 600">Pro plan</span><span class="muted">Renews in 24 days</span></div><div class="bar"><i style="width: 15%"></i></div><a class="btn btn-orbit btn-sm" href="Main.dc.html#pricing">Manage plan<svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div>
+<a class="nav" href="Connect.dc.html" style="margin-top: 8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"></path></svg>Settings<span class="pip"></span></a>
+</aside><div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column"><header style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 16px 32px; border-bottom: 1px solid var(--border); position: relative; z-index: 1"><label style="flex: 1 1 280px; max-width: 520px; display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 8px 0 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--dim)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"></path></svg><span class="sr">Ask YUG AI or search</span><input class="inp" style="border: none; background: transparent; height: 38px; padding: 0; box-shadow: none" placeholder="Ask YUG AI or search…"><span class="chip" style="color: var(--dim); background: var(--surface2)">⌘K</span></label><div style="flex: 1"></div><a class="chip" href="Home.dc.html" style="height: 34px; padding: 0 12px"><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="var(--border)" stroke-width="3"></circle><circle cx="10" cy="10" r="8" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="20 50.3" transform="rotate(-90 10 10)" stroke-linecap="round"></circle></svg>Setup 2/5</a><button class="tgl" type="button" onClick="{{toggleMode}}" aria-label="{{modeLabel}}"><i class="tstar" style="left: 38px; top: 9px"></i><i class="tstar" style="left: 48px; top: 20px"></i><i class="tstar" style="left: 54px; top: 11px"></i><span class="knob"><svg class="k-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg><svg class="k-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg></span></button><button class="iconbtn" type="button" aria-label="Notifications, 3 unread"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"></path></svg><span style="position: absolute; top: 9px; right: 10px; width: 7px; height: 7px; border-radius: 50%; background: var(--accent2)"></span></button><span class="avatar" aria-label="Your profile">T</span></header>
+<main style="padding: 32px; display: flex; flex-direction: column; gap: 22px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
+<div><h1 style="font-size: 30px; font-weight: 600">AI agents &amp; automations</h1><p class="muted" style="font-size: 14px; margin-top: 6px">Let agents answer, rules route, and flows guide, all in a few clicks.</p></div>
+<div class="tabs" role="group" aria-label="Automation sections"><sc-for list="{{tabs}}" as="t" hint-placeholder-count="3"><button type="button" class="tab {{t.cls}}" onClick="{{t.pick}}" aria-pressed="{{t.on}}">{{t.label}}</button></sc-for></div>
+</div>
+
+<sc-if value="{{tAgent}}" hint-placeholder-val="{{true}}"><div class="fade" style="display: flex; flex-wrap: wrap; gap: 20px">
+<section class="card" style="flex: 1 1 380px; padding: 28px; display: flex; flex-direction: column; gap: 18px">
+<span class="chip" style="align-self: flex-start"><i class="pulse" style="width: 6px; height: 6px; border-radius: 50%; background: var(--ok)"></i>Ready to test</span>
+<h2 style="font-size: 28px; line-height: 1.15">Your agent is ready for a test conversation.</h2>
+<p class="muted" style="font-size: 14px; line-height: 1.6">Ask it anything a customer would. When it sounds right, deploy it to your channels.</p>
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; font-size: 14px">
+<li style="display: flex; gap: 12px; align-items: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--accent)"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path></svg>Learns from your website and files</li>
+<li style="display: flex; gap: 12px; align-items: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--accent)"><circle cx="12" cy="12" r="3"></circle><circle cx="12" cy="3" r="1.5"></circle><circle cx="20" cy="17" r="1.5"></circle><circle cx="4" cy="17" r="1.5"></circle><path d="M12 4.5V9M18.7 16.2 14.6 13.5M5.3 16.2 9.4 13.5"></path></svg>Deploys on WhatsApp, Instagram, Messenger, web chat</li>
+<li style="display: flex; gap: 12px; align-items: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--accent)"><path d="M9 2v6M15 2v6M6 8h12v4a6 6 0 0 1-12 0zM12 18v4"></path></svg>Works with Shopify, HubSpot, Sheets and more</li>
+<li style="display: flex; gap: 12px; align-items: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--accent)"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z"></path></svg>Speaks 100+ languages</li></ul>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px"><button type="button" class="btn btn-lg btn-orbit btn-connect {{cn.deploy.cls}}" onClick="{{cn.deploy.go}}" aria-live="polite"><sc-if value="{{cn.deploy.idle}}" hint-placeholder-val="{{true}}">Deploy agent<svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></sc-if><sc-if value="{{cn.deploy.loading}}" hint-placeholder-val="{{false}}"><span class="spinner"></span>Connecting</sc-if><sc-if value="{{cn.deploy.done}}" hint-placeholder-val="{{false}}"><svg class="check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>Connected</sc-if></button><button type="button" class="btn btn-ghost btn-lg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>New from template</button></div>
+</section>
+<section class="card" style="flex: 1 1 420px; display: flex; flex-direction: column; min-height: 520px; overflow: hidden">
+<div style="display: flex; align-items: center; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--border)"><span class="avatar" style="color: var(--accent)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="8" width="16" height="12" rx="3"></rect><path d="M12 4v4M9 13v1M15 13v1M2 14h2M20 14h2"></path></svg></span><div style="flex: 1"><b style="font-size: 14px">Acme assistant</b><p class="muted" style="font-size: 12px">Test mode · not visible to customers</p></div><button type="button" class="btn btn-ghost btn-sm" onClick="{{reset}}">Reset</button></div>
+<div style="flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 10px"><sc-for list="{{msgs}}" as="m" hint-placeholder-count="3"><div class="bub {{m.dir}}">{{m.text}}</div></sc-for><sc-if value="{{typing}}" hint-placeholder-val="{{false}}"><div class="bub in" style="display: flex; gap: 4px; align-items: center"><span class="spinner" style="width: 12px; height: 12px"></span><span class="muted" style="font-size: 12px">Thinking</span></div></sc-if></div>
+<div style="padding: 14px 20px; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{asks}}" as="a" hint-placeholder-count="3"><button type="button" class="pill" onClick="{{a.go}}">{{a.q}}</button></sc-for></div>
+</section></div></sc-if>
+
+<sc-if value="{{tRules}}" hint-placeholder-val="{{false}}"><div class="fade" style="display: flex; flex-direction: column; gap: 20px">
+<section class="card" style="padding: 32px; display: flex; flex-direction: column; gap: 20px; overflow-x: auto">
+<div style="display: flex; justify-content: space-between; align-items: center"><h2 style="font-size: 18px">After-hours reply</h2><span class="chip">Preview</span></div>
+<div style="display: flex; align-items: center; gap: 0; flex-wrap: nowrap"><div class="card" style="padding: 14px 16px; min-width: 200px; max-width: 240px; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--shadow)"><span style="font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--accent2); font-weight: 600">Trigger</span><span style="font-size: 14px; font-weight: 500">New incoming message</span></div><svg width="64" height="20" aria-hidden="true" style="flex: none"><line x1="0" y1="10" x2="58" y2="10" stroke="var(--accent)" stroke-width="2" class="dashflow"></line><path d="M54 5l6 5-6 5" fill="none" stroke="var(--accent)" stroke-width="2"></path></svg><div class="card" style="padding: 14px 16px; min-width: 200px; max-width: 240px; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--shadow)"><span style="font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--warn); font-weight: 600">Condition</span><span style="font-size: 14px; font-weight: 500">Outside working hours</span></div><svg width="64" height="20" aria-hidden="true" style="flex: none"><line x1="0" y1="10" x2="58" y2="10" stroke="var(--accent)" stroke-width="2" class="dashflow"></line><path d="M54 5l6 5-6 5" fill="none" stroke="var(--accent)" stroke-width="2"></path></svg><div class="card" style="padding: 14px 16px; min-width: 200px; max-width: 240px; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--shadow)"><span style="font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--ok); font-weight: 600">Action</span><span style="font-size: 14px; font-weight: 500">Reply: "Thanks! We're offline, back at 9am."</span></div><svg width="64" height="20" aria-hidden="true" style="flex: none"><line x1="0" y1="10" x2="58" y2="10" stroke="var(--accent)" stroke-width="2" class="dashflow"></line><path d="M54 5l6 5-6 5" fill="none" stroke="var(--accent)" stroke-width="2"></path></svg><div class="card" style="padding: 14px 16px; min-width: 200px; max-width: 240px; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--shadow)"><span style="font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); font-weight: 600">Then</span><span style="font-size: 14px; font-weight: 500">Assign to next available agent</span></div></div>
+</section>
+<section class="card" style="overflow-x: auto"><table class="tbl"><thead><tr><th>Rule</th><th>Trigger</th><th>Runs (7d)</th><th>Active</th></tr></thead><tbody>
+<sc-for list="{{rules}}" as="r" hint-placeholder-count="4"><tr><td><b style="font-weight: 600">{{r.name}}</b></td><td class="muted">{{r.trig}}</td><td>{{r.runs}}</td><td><button type="button" class="sw {{r.cls}}" onClick="{{r.flip}}" aria-pressed="{{r.on}}" aria-label="Toggle {{r.name}}"></button></td></tr></sc-for>
+</tbody></table></section></div></sc-if>
+
+<sc-if value="{{tFlows}}" hint-placeholder-val="{{false}}"><div class="fade" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px">
+<sc-for list="{{flows}}" as="f" hint-placeholder-count="4"><article class="card lift" style="padding: 20px; display: flex; flex-direction: column; gap: 10px"><b style="font-size: 15px">{{f.name}}</b><p class="muted" style="font-size: 13px; line-height: 1.5">{{f.desc}}</p><div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px"><span class="muted" style="font-size: 12px">{{f.steps}} steps</span><button type="button" class="btn btn-ghost btn-sm">Open builder</button></div></article></sc-for>
+<button type="button" class="card lift opt" style="padding: 20px; border-style: dashed; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 150px; color: var(--muted)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Blank flow</button>
+</div></sc-if>
+</main>
+</div></div></div></x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["night","day"],"default":"night","section":"Theme"},"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  constructor(props){ super(props); this.state = Object.assign({ mode: null, mx: 0, my: 0, sy: 0, conn: {} }, this.init ? this.init() : {}); }
+  stars(n, seed){ let s = seed; const r = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; }; const out = []; for (let i = 0; i < n; i++) { out.push({ x: (r()*100).toFixed(2), y: (r()*100).toFixed(2), z: (r()*1.7+.6).toFixed(1), d: (r()*6).toFixed(1) }); } return out; }
+  common(){
+    const m = this.state.mode || this.props.theme || 'night';
+    if (!this._st) { this._st = this.stars(this.starCount || 46, 11); this._st2 = this.stars(this.starCount2 || 22, 97); }
+    const mx = this.state.mx, my = this.state.my, sy = this.state.sy;
+    return {
+      mode: m,
+      toggleMode: () => this.setState({ mode: m === 'night' ? 'day' : 'night' }),
+      modeLabel: m === 'night' ? 'Switch to day mode' : 'Switch to night mode',
+      stars: this._st, stars2: this._st2,
+      onMove: (e) => { const r = e.currentTarget.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / Math.max(r.height, 1) - .5; if (Math.abs(x - this.state.mx) + Math.abs(y - this.state.my) > .01) this.setState({ mx: x, my: y }); },
+      p1x: (mx * -14).toFixed(1), p1y: (my * -14 + sy * .12).toFixed(1),
+      p2x: (mx * -30).toFixed(1), p2y: (my * -30 + sy * .25).toFixed(1),
+      p3x: (mx * 22).toFixed(1), p3y: (my * 22 - sy * .08).toFixed(1),
+      p4x: (mx * 38).toFixed(1), p4y: (my * 38 - sy * .16).toFixed(1),
+    };
+  }
+  cn(ids, pre){ const o = {}; ids.forEach((id) => { const st = this.state.conn[id] || (pre && pre[id]) || 'idle'; o[id] = { cls: st, idle: st === 'idle', loading: st === 'loading', done: st === 'done', go: () => { if (st !== 'idle') return; this.setState((s) => ({ conn: Object.assign({}, s.conn, { [id]: 'loading' }) })); setTimeout(() => this.setState((s) => ({ conn: Object.assign({}, s.conn, { [id]: 'done' }) })), 1400); } }; }); return o; }
+
+  init(){ return { tab: 'agent', chat: [['in','Hi! I am the Acme assistant. Ask me anything about orders, delivery or returns.']], typing: false, rules: { a: true, b: true, c: false, d: true } }; }
+  renderVals(){
+    const c = this.common(); const t = this.state.tab;
+    const qa = [['Where is my order?','Share your order number and I will check it right away.'],['Do you ship to Dubai?','Yes, we ship to the UAE in 4–6 business days.'],['Can I talk to a human?','Of course. Connecting you to Aditi from our team now.']];
+    const R = [['a','Welcome message','First message from a new contact','1,204'],['b','After-hours reply','Message outside 9am–7pm','318'],['c','Cart abandoned 1h','Shopify checkout not completed','0'],['d','Keyword: PRICE','Message contains "price"','87']];
+    return Object.assign(c, {
+      tabs: [['agent','AI agent'],['rules','Rules'],['flows','Chatbot flows']].map(([k, l]) => ({ label: l, on: String(t === k), cls: t === k ? 'on' : '', pick: () => this.setState({ tab: k }) })),
+      tAgent: t === 'agent', tRules: t === 'rules', tFlows: t === 'flows',
+      msgs: this.state.chat.map(([d, x]) => ({ dir: d, text: x })), typing: this.state.typing,
+      asks: qa.map(([q, a]) => ({ q, go: () => { if (this.state.typing) return; this.setState((s) => ({ chat: s.chat.concat([['out', q]]), typing: true })); setTimeout(() => this.setState((s) => ({ typing: false, chat: s.chat.concat([['in', a]]) })), 1300); } })),
+      reset: () => this.setState({ chat: [['in','Hi! I am the Acme assistant. Ask me anything about orders, delivery or returns.']], typing: false }),
+      rules: R.map(([k, n, tr, r]) => { const on = this.state.rules[k]; return { name: n, trig: tr, runs: r, on: String(on), cls: on ? 'on' : '', flip: () => this.setState((s) => ({ rules: Object.assign({}, s.rules, { [k]: !on }) })) }; }),
+      flows: [['Lead qualification','Asks budget, timeline and need, then tags and routes the lead.',6],['Order tracking','Looks up Shopify orders by number and replies with status.',4],['Appointment booking','Offers slots from your calendar and confirms in chat.',5],['FAQ menu','Button menu for your top 8 questions.',3]].map(([n, d, s]) => ({ name: n, desc: d, steps: s })),
+      cn: this.cn(['deploy']),
+    });
+  }
+
+}
+</script>
+</body>
+</html>
